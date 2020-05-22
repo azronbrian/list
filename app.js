@@ -7,8 +7,8 @@ app.use(express.urlencoded({extended: false}));
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'user',
-  password: 'password',
+  user: 'root',
+  password: 'connectdb',
   database: 'list_app'
 });
 
@@ -18,9 +18,9 @@ app.get('/', (req, res) => {
 
 app.get('/index', (req, res) => {
   connection.query(
-    'SELECT * FROM items',
+    'SELECT * FROM tasks',
     (error, results) => {
-      res.render('index.ejs', {items: results});
+      res.render('index.ejs', {tasks: results});
     }
   );
 });
@@ -31,7 +31,7 @@ app.get('/new', (req, res) => {
 
 app.post('/create', (req, res) => {
   connection.query(
-    'INSERT INTO items (name) VALUES (?)',
+    'INSERT INTO tasks (name) VALUES (?)',
     [req.body.itemName],
     (error, results) => {
       res.redirect('/index');
@@ -41,7 +41,7 @@ app.post('/create', (req, res) => {
 
 app.post('/delete/:id', (req, res) => {
   connection.query(
-    'DELETE FROM items WHERE id = ?',
+    'DELETE FROM tasks WHERE id = ?',
     [req.params.id],
     (error, results) => {
       res.redirect('/index');
@@ -51,10 +51,10 @@ app.post('/delete/:id', (req, res) => {
 
 app.get('/edit/:id', (req, res) => {
   connection.query(
-    'SELECT * FROM items WHERE id = ?',
+    'SELECT * FROM tasks WHERE id = ?',
     [req.params.id],
     (error, results) => {
-      res.render('edit.ejs', {item: results[0]});
+      res.render('edit.ejs', {task: results[0]});
     }
   );
 });
@@ -62,7 +62,7 @@ app.get('/edit/:id', (req, res) => {
 app.post('/update/:id', (req, res) => {
   // Write code to update the selected item
   connection.query(
-    'UPDATE items SET name = ? WHERE id = ?',
+    'UPDATE tasks SET name = ? WHERE id = ?',
     [req.body.itemName, req.params.id],
     (error, results) => {
       res.redirect('/index');
